@@ -1,17 +1,57 @@
+<?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Task;
 use Illuminate\Http\Request;
 
+/**
+ * @OA\Info(title="Task App API", version="1.0")
+ */
 class TaskController extends Controller
 {
-    // 모든 작업 목록 조회
+    /**
+     * @OA\Get(
+     *     path="/tasks",
+     *     summary="Get all tasks",
+     *     description="Returns a list of all tasks",
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of tasks retrieved successfully",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Task")
+     *         )
+     *     )
+     * )
+     */
     public function index()
     {
         return Task::all();
     }
 
-    // 새로운 작업 생성
+    /**
+     * @OA\Post(
+     *     path="/tasks",
+     *     summary="Create a new task",
+     *     description="Creates a new task and returns it",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"title", "due_date"},
+     *             @OA\Property(property="title", type="string", example="New Task"),
+     *             @OA\Property(property="description", type="string", example="Task description"),
+     *             @OA\Property(property="due_date", type="string", format="date", example="2025-02-01"),
+     *             @OA\Property(property="completed", type="boolean", example=false)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Task created successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/Task")
+     *     )
+     * )
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -25,7 +65,29 @@ class TaskController extends Controller
         return response()->json($task, 201);
     }
 
-    // 특정 작업 조회
+    /**
+     * @OA\Get(
+     *     path="/tasks/{id}",
+     *     summary="Get a task by ID",
+     *     description="Returns a task by its ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="Task ID",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Task found successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/Task")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Task not found"
+     *     )
+     * )
+     */
     public function show($id)
     {
         $task = Task::find($id);
@@ -37,7 +99,39 @@ class TaskController extends Controller
         return response()->json($task);
     }
 
-    // 특정 작업 수정
+    /**
+     * @OA\Put(
+     *     path="/tasks/{id}",
+     *     summary="Update a task",
+     *     description="Updates a task by its ID and returns the updated task",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="Task ID",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"title", "due_date"},
+     *             @OA\Property(property="title", type="string", example="Updated Task"),
+     *             @OA\Property(property="description", type="string", example="Updated task description"),
+     *             @OA\Property(property="due_date", type="string", format="date", example="2025-03-01"),
+     *             @OA\Property(property="completed", type="boolean", example=true)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Task updated successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/Task")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Task not found"
+     *     )
+     * )
+     */
     public function update(Request $request, $id)
     {
         $task = Task::find($id);
@@ -57,7 +151,28 @@ class TaskController extends Controller
         return response()->json($task);
     }
 
-    // 특정 작업 삭제
+    /**
+     * @OA\Delete(
+     *     path="/tasks/{id}",
+     *     summary="Delete a task",
+     *     description="Deletes a task by its ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="Task ID",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Task deleted successfully"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Task not found"
+     *     )
+     * )
+     */
     public function destroy($id)
     {
         $task = Task::find($id);
