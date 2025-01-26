@@ -8,14 +8,18 @@ use Illuminate\Support\Facades\DB; // Add this import
 
 class DashboardController extends Controller
 {
-    public function index()
+ public function index()
     {
         $totalTasks = Task::count();
+
         $completedTasks = Task::where('completed', true)->count();
-        $tasksByDueDate = Task::selectRaw('DATE(due_date) as due_date, count(*) as task_count')
+        
+        $tasksByDueDate = Task::selectRaw('DATE(due_date) as date, count(*) as count')
                             ->groupBy(DB::raw('DATE(due_date)'))
                             ->get();
 
-        return view('dashboard.index', compact('totalTasks', 'completedTasks', 'tasksByDueDate'));
+        return view('dashboard', compact('totalTasks', 'completedTasks', 'tasksByDueDate'));
     }
 }
+
+
