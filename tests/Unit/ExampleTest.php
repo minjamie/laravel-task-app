@@ -1,16 +1,24 @@
 <?php
+// tests/Unit/TaskTest.php
 
 namespace Tests\Unit;
 
+use App\Models\Task;
 use PHPUnit\Framework\TestCase;
 
-class ExampleTest extends TestCase
+class TaskTest extends TestCase
 {
-    /**
-     * A basic test example.
-     */
-    public function test_that_true_is_true(): void
+    public function test_task_is_complete_when_completed_is_true()
     {
-        $this->assertTrue(true);
+        $task = Task::factory()->create(['completed' => true]);
+
+        $this->assertTrue($task->completed);
+    }
+
+    public function test_task_is_not_complete_when_completed_is_false()
+    {
+        $task = Task::factory()->create(['completed' => false]);
+
+        $this->assertFalse($task->completed);
     }
 }

@@ -25,8 +25,8 @@
             <tbody>
                 @foreach($tasksByDueDate as $task)
                     <tr>
-                        <td>{{ $task->due_date }}</td>
-                        <td>{{ $task->task_count }}</td>
+                        <td>{{ $task->date }}</td> <!-- Corrected column name to 'date' -->
+                        <td>{{ $task->count }}</td> <!-- Corrected column name to 'count' -->
                     </tr>
                 @endforeach
             </tbody>
